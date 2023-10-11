@@ -178,7 +178,7 @@ You may notice that for command width larger than 32, more WRITE_CMDs are requir
 # Use your RV core
 To integrate customized RISC-V CPU into THRIVE, modification on interfaces including XoCC (for xocc interconnection) and AXI (for system bus) are required. 
 **1. Integrate XoCC into your RV core**  
-TBA   
+Reference [Rv-with-XoCC](https://github.com/alibaba/rv-with-xocc) to add XoCC instruction extension to your core.  
 After that, xocc-related verilog files need to be formatted as mako templates to support configurability.  
 **2. Integrate System AXI Bus**  
 THRIVE chooses AXI as intra-PE communication protocol. Thus, RV core requires an AXI master interface to access memory. Commonly, a bridge should be implemented for system bus. For example, THRIVE uses an AHB2AXI bridge for XuanTie RV core connect to AXI interconnect.  
