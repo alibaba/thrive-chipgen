@@ -1,0 +1,91 @@
+/* 
+*Copyright (c) 2021, Alibaba Group;
+*Licensed under the Apache License, Version 2.0 (the "License");
+*you may not use this file except in compliance with the License.
+*You may obtain a copy of the License at
+
+*   http://www.apache.org/licenses/LICENSE-2.0
+
+*Unless required by applicable law or agreed to in writing, software
+*distributed under the License is distributed on an "AS IS" BASIS,
+*WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*See the License for the specific language governing permissions and
+*limitations under the License.
+*/
+
+&ModuleBeg;
+&Ports;
+
+&Instance("async_rstgen", "x_sys_rstgen")
+&Connect(
+    .clk_i(sys_clk),
+    .rst_i(sys_rstn),
+    .soft_rst_i(1'b1),
+    .rst_n(sys_rstn_o)
+);
+
+&Instance("async_rstgen", "x_memsys_rstgen")
+&Connect(
+    .clk_i(sys_clk),
+    .rst_i(sys_rstn),
+    .soft_rst_i(sram_soft_rstn),
+    .rst_n(mem_sub_sys_rstn)
+);
+
+&Instance("async_rstgen", "x_dispatcher_rstgen")
+&Connect(
+    .clk_i(dispatcher_clk),
+    .rst_i(sys_rstn_o),
+    .soft_rst_i(dispatcher_soft_rstn),
+    .rst_n(dispatcher_rstn)
+);
+
+&Instance("async_rstgen", "x_regular_0_rstgen")
+&Connect(
+    .clk_i(regular_0_clk),
+    .rst_i(sys_rstn_o),
+    .soft_rst_i(regular_0_soft_rstn),
+    .rst_n(regular_0_rstn)
+);
+
+&Instance("async_rstgen", "x_regular_1_rstgen")
+&Connect(
+    .clk_i(regular_1_clk),
+    .rst_i(sys_rstn_o),
+    .soft_rst_i(regular_1_soft_rstn),
+    .rst_n(regular_1_rstn)
+);
+
+&Instance("async_rstgen", "x_dsa_0_rstgen")
+&Connect(
+    .clk_i(dsa_0_clk),
+    .rst_i(sys_rstn_o),
+    .soft_rst_i(dsa_0_soft_rstn),
+    .rst_n(dsa_0_rstn)
+);
+
+&Instance("async_rstgen", "x_dsa_1_rstgen")
+&Connect(
+    .clk_i(dsa_1_clk),
+    .rst_i(sys_rstn_o),
+    .soft_rst_i(dsa_1_soft_rstn),
+    .rst_n(dsa_1_rstn)
+);
+
+&Instance("async_rstgen", "x_dsa_2_rstgen")
+&Connect(
+    .clk_i(dsa_2_clk),
+    .rst_i(sys_rstn_o),
+    .soft_rst_i(dsa_2_soft_rstn),
+    .rst_n(dsa_2_rstn)
+);
+
+&Instance("async_rstgen", "x_nou_rstgen")
+&Connect(
+    .clk_i(nou_clk),
+    .rst_i(sys_rstn_o),
+    .soft_rst_i(nou_soft_rstn),
+    .rst_n(nou_rstn)
+);
+
+&ModuleEnd;

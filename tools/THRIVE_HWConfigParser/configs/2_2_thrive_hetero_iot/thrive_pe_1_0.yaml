@@ -1,0 +1,177 @@
+# 
+#Copyright (c) 2021, Alibaba Group;
+#Licensed under the Apache License, Version 2.0 (the "License");
+#you may not use this file except in compliance with the License.
+#You may obtain a copy of the License at
+
+#   http://www.apache.org/licenses/LICENSE-2.0
+
+#Unless required by applicable law or agreed to in writing, software
+#distributed under the License is distributed on an "AS IS" BASIS,
+#WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#See the License for the specific language governing permissions and
+#limitations under the License.
+#
+
+version: 1.0
+type: heterogeneous
+name: pe_1_0
+dispatcher:
+  - type: e906
+regular:
+  - type: e906
+rvcluster: # rv cluster topology
+  num: 4
+  config: ["pe_1_0_dispatcher", "pe_1_0_regular_0", "pe_1_0_regular_1", "pe_1_0_regular_2"]
+  dispatcher: 
+    - name: pe_1_0_dispatcher 
+      link:
+      - dst: pe_1_0_regular_0
+        index: 0
+        qid: 0
+        type: xocc
+        width: [32, 32] # cmd width, rsp width; depth is fixed to 32
+      - dst: pe_1_0_regular_1
+        index: 1
+        qid: 1
+        type: xocc
+        width: [32, 32]
+      - dst: pe_1_0_regular_2
+        index: 2
+        qid: 2
+        type: xocc
+        width: [32, 32]
+      - dst: nou
+        qid: 4
+        index: 3
+        type: xocc
+        width: [64, 64]
+      - dst: memory
+        type: axi
+        index: 0
+        width: 32
+        mem:
+  regular:
+    - name: pe_1_0_regular_0
+      link:
+      - dst: pe_1_0_dispatcher
+        index: 0
+        qid: 0
+        type: xocc
+        width: [32, 32]
+      - dst: gemm
+        qid: 1
+        index: 4
+        type: xocc
+        width: [96, 32]
+      - dst: memory
+        index: 1
+        type: axi
+        width: 32
+        mem:
+    - name: pe_1_0_regular_1
+      link:
+      - dst: pe_1_0_dispatcher
+        index: 1
+        qid: 0
+        type: xocc
+        width: [32, 32]
+      - dst: gemm
+        index: 5
+        qid: 1
+        type: xocc
+        width: [96, 32]
+      - dst: memory
+        index: 2
+        type: axi
+        width: 32
+        mem:
+    - name: pe_1_0_regular_2
+      link:
+      - dst: pe_1_0_dispatcher
+        index: 2
+        qid: 0
+        type: xocc
+        width: [32, 32]
+      - dst: dmu
+        index: 6
+        qid: 1
+        type: xocc
+        width: [96, 32]
+      - dst: memory
+        index: 3
+        type: axi
+        width: 32
+        mem:
+memory:
+- size: 524288 # unit: Byte
+  type: scratchpad # or 3DMem
+  bankNum: 4
+  index: 0
+- size: 4096
+  type: csr
+  bankNum:
+  index: 1
+dsa:  # dsa topology, xocc port is ignored
+  num: 3
+  config: ["gemm", "dmu", "nou"]
+  gemm:
+    - name: gemm
+      link:
+      - dst: memory
+        index: 4
+        type: axi
+        width: 1024
+        port: rw
+        mem:
+      - dst: memory
+        index: 5
+        type: axi
+        width: 1024
+        port: rw
+        mem:
+      - dst: memory
+        index: 6
+        type: axi
+        width: 1024
+        port: w
+        mem:
+      - dst: pe_1_0_regular_0
+        index: 4
+        type: xocc
+      - dst: pe_1_0_regular_1
+        index: 5
+        type: xocc
+  dmu:
+    - name: dmu
+      link:
+      - dst: memory
+        index: 7
+        type: axi
+        width: 1024
+        port: rw
+        mem:
+      - dst: pe_1_0_regular_2
+        index: 6
+        type: xocc
+  nou:
+    - name: nou
+      link:
+      - dst: memory
+        index: 8
+        type: axi
+        width: 512
+        port: rw
+        mem:
+      - dst: noc_1_0
+        index: 0
+        type: noc
+        width: 512
+        mem:
+      - dst: pe_1_0_dispatcher
+        index: 3
+        type: xocc
+gemm:
+vpu:
+dmu:
+nou:

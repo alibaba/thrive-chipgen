@@ -1,0 +1,95 @@
+/* 
+*Copyright (c) 2021, Alibaba Group;
+*Licensed under the Apache License, Version 2.0 (the "License");
+*you may not use this file except in compliance with the License.
+*You may obtain a copy of the License at
+
+*   http://www.apache.org/licenses/LICENSE-2.0
+
+*Unless required by applicable law or agreed to in writing, software
+*distributed under the License is distributed on an "AS IS" BASIS,
+*WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*See the License for the specific language governing permissions and
+*limitations under the License.
+*/
+
+&ModuleBeg;
+&Ports;
+
+// Inst RV Cluster
+% if rvc.name:
+&Instance("${rvc.name}_rv_cluster_top");
+% else:
+&Instance("rv_cluster_top");
+% endif
+&ConnRule(r'_retire_pc', r'_pc')
+&Connect(
+% for rv in rvc.dispatcher + rvc.regular:
+    % for link in rv.link:
+        % if (link.dst not in rvc.config) and (link.type == "xocc"):
+<% ind = rv.xocc_link_hash[link.index] %>\
+    .${rv.name}_xocc_${link.index}_clk (${link.dst}_clk),
+    .${rv.name}_xocc_${link.index}_rst (${link.dst}_rstn),
+        % endif
+    % endfor
+% endfor
+);
+
+% for dsa in dsas.dsas:
+// Inst ${dsa.name} 
+&Instance("${dsa.module}_top_wrapper", "x_${dsa.name}_top_wrapper");
+    % if dsa.num_xocc == 1:
+        % for link_ind, link_dst in dsa.xocc_link_dst_hash.items():
+&ConnRule(r'rv_xocc', r'${link_dst}_xocc_${link_ind}');
+        % endfor
+    % else:
+        % for link_ind, link_dst in dsa.xocc_link_dst_hash.items():
+&ConnRule(r'rv_${dsa.xocc_link_ind_hash[link_ind]}_xocc', r'${link_dst}_xocc_${link_ind}');
+        % endfor
+    % endif
+&ConnRule(r'axi', r'${dsa.name}_m_axi');
+&ConnRule(r'axi_aclk', r'${dsa.name}_clk');
+&ConnRule(r'axi_aresetn', r'${dsa.name}_rstn');
+
+% endfor
+
+// Mem SS
+&Instance("mem_sub_sys_top");
+
+// NoC
+&Instance("noc_wrapper");
+
+// CSR
+&Instance("axi_csr", "x_csr");
+&ConnRule(r'axi_', r'csr_axi_');
+&Connect(
+    .aclk (sys_clk),
+    .arstn (sys_rstn),
+);
+
+// XBar
+% if xbar.name:
+&Instance("${xbar.name}_xbar_top");
+% else:
+&Instance("xbar_top");
+% endif
+
+% for ind, src in xbar.slave_link_map_r.items():
+&ConnRule(r'S${ind}_AXI', r'${src}');
+% endfor
+% for ind, src in xbar.master_link_map_r.items():
+&ConnRule(r'M${ind}_AXI', r'${src}');
+% endfor
+
+&Connect(
+% for ind, src in xbar.slave_link_map_c.items():
+    .S${ind}_AXI_aclk (${src}_clk),
+    .S${ind}_AXI_aresetn (${src}_rstn),
+% endfor
+% for ind, src in xbar.master_link_map_c.items():
+    .M${ind}_AXI_aclk (${src}_clk),
+    .M${ind}_AXI_aresetn (${src}_rstn),
+% endfor
+);
+
+&ModuleEnd;

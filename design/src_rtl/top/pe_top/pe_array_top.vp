@@ -1,0 +1,75 @@
+/* 
+*Copyright (c) 2021, Alibaba Group;
+*Licensed under the Apache License, Version 2.0 (the "License");
+*you may not use this file except in compliance with the License.
+*You may obtain a copy of the License at
+
+*   http://www.apache.org/licenses/LICENSE-2.0
+
+*Unless required by applicable law or agreed to in writing, software
+*distributed under the License is distributed on an "AS IS" BASIS,
+*WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*See the License for the specific language governing permissions and
+*limitations under the License.
+*/
+
+&ModuleBeg;
+&Ports;
+
+&Instance("pe_top", "x_pe_0_0_pe_top");
+&ConnRule(r'^(?!pe_)', r'pe_0_0_');
+&ConnRule(r'pe_0_0_(\w+)_E_in', r'pe_1_0_to_pe_0_0_\1');
+&ConnRule(r'pe_0_0_(\w+)_E_out', r'pe_0_0_to_pe_1_0_\1');
+&ConnRule(r'pe_0_0_(\w+)_N_in', r'pe_0_1_to_pe_0_0_\1');
+&ConnRule(r'pe_0_0_(\w+)_N_out', r'pe_0_0_to_pe_0_1_\1');
+
+&Force("nonport", "pe_0_0_myLocX")
+&Force("nonport", "pe_0_0_myLocY")
+&Force("nonport", "pe_0_0_myChipID")
+assign pe_0_0_myLocX = 4'd0;
+assign pe_0_0_myLocY = 4'd0;
+assign pe_0_0_myChipID = 1'd0;
+
+&Instance("pe_top", "x_pe_1_0_pe_top");
+&ConnRule(r'^(?!pe_)', r'pe_1_0_');
+&ConnRule(r'pe_1_0_(\w+)_W_in', r'pe_0_0_to_pe_1_0_\1');
+&ConnRule(r'pe_1_0_(\w+)_W_out', r'pe_1_0_to_pe_0_0_\1');
+&ConnRule(r'pe_1_0_(\w+)_N_in', r'pe_1_1_to_pe_1_0_\1');
+&ConnRule(r'pe_1_0_(\w+)_N_out', r'pe_1_0_to_pe_1_1_\1');
+
+&Force("nonport", "pe_1_0_myLocX")
+&Force("nonport", "pe_1_0_myLocY")
+&Force("nonport", "pe_1_0_myChipID")
+assign pe_1_0_myLocX = 4'd1;
+assign pe_1_0_myLocY = 4'd0;
+assign pe_1_0_myChipID = 1'd0;
+
+&Instance("pe_top", "x_pe_0_1_pe_top");
+&ConnRule(r'^(?!pe_)', r'pe_0_1_');
+&ConnRule(r'pe_0_1_(\w+)_S_in', r'pe_0_0_to_pe_0_1_\1');
+&ConnRule(r'pe_0_1_(\w+)_S_out', r'pe_0_1_to_pe_0_0_\1');
+&ConnRule(r'pe_0_1_(\w+)_E_in', r'pe_1_1_to_pe_0_1_\1');
+&ConnRule(r'pe_0_1_(\w+)_E_out', r'pe_0_1_to_pe_1_1_\1');
+
+&Force("nonport", "pe_0_1_myLocX")
+&Force("nonport", "pe_0_1_myLocY")
+&Force("nonport", "pe_0_1_myChipID")
+assign pe_0_1_myLocX = 4'd0;
+assign pe_0_1_myLocY = 4'd1;
+assign pe_0_1_myChipID = 1'd0;
+
+&Instance("pe_top", "x_pe_1_1_pe_top");
+&ConnRule(r'^(?!pe_)', r'pe_1_1_');
+&ConnRule(r'pe_1_1_(\w+)_W_in', r'pe_0_1_to_pe_1_1_\1');
+&ConnRule(r'pe_1_1_(\w+)_W_out', r'pe_1_1_to_pe_0_1_\1');
+&ConnRule(r'pe_1_1_(\w+)_S_in', r'pe_1_0_to_pe_1_1_\1');
+&ConnRule(r'pe_1_1_(\w+)_S_out', r'pe_1_1_to_pe_1_0_\1');
+
+&Force("nonport", "pe_1_1_myLocX")
+&Force("nonport", "pe_1_1_myLocY")
+&Force("nonport", "pe_1_1_myChipID")
+assign pe_1_1_myLocX = 4'd1;
+assign pe_1_1_myLocY = 4'd1;
+assign pe_1_1_myChipID = 1'd0;
+
+&ModuleEnd;

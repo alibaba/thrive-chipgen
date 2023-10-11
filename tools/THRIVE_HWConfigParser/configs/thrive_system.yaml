@@ -1,0 +1,102 @@
+# 
+#Copyright (c) 2021, Alibaba Group;
+#Licensed under the Apache License, Version 2.0 (the "License");
+#you may not use this file except in compliance with the License.
+#You may obtain a copy of the License at
+
+#   http://www.apache.org/licenses/LICENSE-2.0
+
+#Unless required by applicable law or agreed to in writing, software
+#distributed under the License is distributed on an "AS IS" BASIS,
+#WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#See the License for the specific language governing permissions and
+#limitations under the License.
+#
+
+version: 0.1
+type: template # Tenstorrent-like interconnection
+chip: # card?
+- index: 0
+  name: thrive_chip # name of chip
+  type: thrive_chip # type of chip
+- index: 1
+  name: thrive_chip
+  type: thrive_chip
+- index: 2
+  name: thrive_chip
+  type: thrive_chip
+- index: 3
+  name: thrive_chip
+  type: thrive_chip
+memory:
+- index: 4
+  name:
+  type: cxl
+- index: 5
+  name:
+  type: cxl
+- index: 6
+  name:
+  type: cxl
+- index: 7
+  name:
+  type: cxl
+link:
+- bandwidth: 128 # unit
+  direction: bi
+  dst: 1
+  index: 8
+  src: 0
+  type: c2c # chip-2-chip (c2c) or chip-2-memory (c2m)
+- bandwidth: 128
+  direction: bi
+  dst: 3
+  index: 9
+  src: 1
+  type: c2c
+- bandwidth: 128
+  direction: bi
+  dst: 2
+  index: 10
+  src: 3
+  type: c2c
+- bandwidth: 128
+  direction: bi
+  dst: 0
+  index: 11
+  src: 2
+  type: c2c
+- bandwidth: 128
+  direction: bi
+  dst: 0
+  index: 12
+  src: 4
+  type: c2m
+- bandwidth: 128
+  direction: bi
+  dst: 1
+  index: 13
+  src: 5
+  type: c2m
+- bandwidth: 128
+  direction: bi
+  dst: 3
+  index: 14
+  src: 7
+  type: c2m
+- bandwidth: 128
+  direction: bi
+  dst: 2
+  index: 15
+  src: 6
+  type: c2m
+############################################################
+## Template: 2x2 2D Chip Mesh with 4 CXL Memory Extension
+#        L[12]         L[8]           L[13]
+# M[4] -------- C[0] -------- C[1] -------- M[5]
+#                |             |
+#          L[11] |             | L[9]
+#                |             |
+# M[6] -------- C[2] -------- C[3] -------- M[7]
+#        L[15]         L[10]          L[14] 
+###########################################################

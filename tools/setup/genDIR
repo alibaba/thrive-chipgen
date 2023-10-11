@@ -1,0 +1,26 @@
+#!/usr/bin/perl -w 
+use Cwd;
+use Env qw(DESIGN_TOP);
+
+print "generate work directory for project\n";
+my $SrcDir = "src";
+my $DesDir = "gen";
+chdir($DESIGN_TOP) or die "can't locate the directory path $!\n";
+      my @array = `find ./ -type d`;
+      print @array ,"\n";
+      my $i = @array -1;
+      while($i !=0){
+            $_ = $array[$i];
+            s/\.\///;
+            $array[$i]=$_;
+            chomp($array[$i]);
+           if( $array[$i]!~m"\b$SrcDir"){
+                         $i=$i -1;
+                   } else { 
+                       $_=$array[$i];
+                       s/$SrcDir/$DesDir/;
+                       $i=$i-1;
+                       system(" mkdir -p $_");
+                     }
+           
+}

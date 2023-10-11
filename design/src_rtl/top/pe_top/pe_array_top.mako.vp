@@ -1,0 +1,39 @@
+/* 
+*Copyright (c) 2021, Alibaba Group;
+*Licensed under the Apache License, Version 2.0 (the "License");
+*you may not use this file except in compliance with the License.
+*You may obtain a copy of the License at
+
+*   http://www.apache.org/licenses/LICENSE-2.0
+
+*Unless required by applicable law or agreed to in writing, software
+*distributed under the License is distributed on an "AS IS" BASIS,
+*WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*See the License for the specific language governing permissions and
+*limitations under the License.
+*/
+
+&ModuleBeg;
+&Ports;
+
+% for pe in chip.pe:
+    % if chip.type == "homogeneous":
+&Instance("pe_top", "x_${pe.name}_pe_top");
+    % elif chip.type == "heterogeneous":
+&Instance("${pe.name}_pe_top", "x_${pe.name}_pe_top");
+    % endif
+&ConnRule(r'^(?!pe_)', r'${pe.name}_');
+    % for direction, dst_pe in pe.noc_link_map.items():
+&ConnRule(r'${pe.name}_(\w+)_${direction}_in', r'${dst_pe}_to_${pe.name}_\1');
+&ConnRule(r'${pe.name}_(\w+)_${direction}_out', r'${pe.name}_to_${dst_pe}_\1');
+    % endfor
+
+&Force("nonport", "${pe.name}_myLocX")
+&Force("nonport", "${pe.name}_myLocY")
+&Force("nonport", "${pe.name}_myChipID")
+assign ${pe.name}_myLocX = 4'd${pe.loc_x};
+assign ${pe.name}_myLocY = 4'd${pe.loc_y};
+assign ${pe.name}_myChipID = 1'd0;
+
+% endfor
+&ModuleEnd;

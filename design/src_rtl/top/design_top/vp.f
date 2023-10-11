@@ -1,0 +1,9 @@
+/rshome/linyong.huang/Projects/TCG/TCG-opensource/design//gen_rtl/noc/noc_wrapper.v
+/rshome/linyong.huang/Projects/TCG/TCG-opensource/design//gen_rtl/top/mem_subsys/mem_sub_sys_top.v
+/rshome/linyong.huang/Projects/TCG/TCG-opensource/design//gen_rtl/nou/nou_top_wrapper.v
+/rshome/linyong.huang/Projects/TCG/TCG-opensource/design//gen_rtl/util/dummy_dsa_top_wrapper.v
+/rshome/linyong.huang/Projects/TCG/TCG-opensource/design//gen_rtl/top/rv_cluster/rv_cluster_top.v
+/rshome/linyong.huang/Projects/TCG/TCG-opensource/design//gen_rtl/top/pe_top/pe_top.v
+/rshome/linyong.huang/Projects/TCG/TCG-opensource/design//gen_rtl/rstgen/pe_rstgen.v
+/rshome/linyong.huang/Projects/TCG/TCG-opensource/design//gen_rtl/top/pe_top/pe_array_top.v
+/rshome/linyong.huang/Projects/TCG/TCG-opensource/design//gen_rtl/top/design_top/thrive_top_wrapper.v

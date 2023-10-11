@@ -1,0 +1,95 @@
+/* 
+*Copyright (c) 2021, Alibaba Group;
+*Licensed under the Apache License, Version 2.0 (the "License");
+*you may not use this file except in compliance with the License.
+*You may obtain a copy of the License at
+
+*   http://www.apache.org/licenses/LICENSE-2.0
+
+*Unless required by applicable law or agreed to in writing, software
+*distributed under the License is distributed on an "AS IS" BASIS,
+*WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*See the License for the specific language governing permissions and
+*limitations under the License.
+*/
+
+&ModuleBeg;
+&Ports;
+
+// Init RV: dispatcher
+&Instance("dispatcher_rv_wrapper");
+&ConnRule(r'^xocc_0', r'dispatcher_xocc_0');
+&ConnRule(r'^xocc_1', r'dispatcher_xocc_1');
+&ConnRule(r'^xocc_2', r'dispatcher_xocc_2');
+&ConnRule(r'^xocc_3', r'dispatcher_xocc_3');
+&ConnRule(r'm_axi', r'dispatcher_m_axi');
+&Connect(
+    .biu_pad_retire_pc (dispatcher_retire_pc),
+    .i_pad_clk (dispatcher_clk),
+    .i_pad_rst_b (dispatcher_rstn),
+    .pad_cpu_rst_addr (dispatcher_rst_addr),
+    .xocc_0_clk (regular_0_clk),
+    .xocc_0_rst (regular_0_rstn),
+    .xocc_1_clk (regular_1_clk),
+    .xocc_1_rst (regular_1_rstn),
+);
+&Force("output", "dispatcher_retire_pc");
+
+// Init RV: regular_0
+&Instance("regular_0_rv_wrapper");
+&ConnRule(r'^xocc_0', r'regular_0_xocc_0');
+&ConnRule(r'^xocc_1', r'regular_0_xocc_4');
+&ConnRule(r'm_axi', r'regular_0_m_axi');
+&Connect(
+    .biu_pad_retire_pc (regular_0_retire_pc),
+    .i_pad_clk (regular_0_clk),
+    .i_pad_rst_b (regular_0_rstn),
+    .pad_cpu_rst_addr (regular_0_rst_addr),
+    .xocc_0_clk (dispatcher_clk),
+    .xocc_0_rst (dispatcher_rstn),
+);
+&Force("output", "regular_0_retire_pc");
+
+// Init RV: regular_1
+&Instance("regular_1_rv_wrapper");
+&ConnRule(r'^xocc_0', r'regular_1_xocc_1');
+&ConnRule(r'^xocc_1', r'regular_1_xocc_5');
+&ConnRule(r'm_axi', r'regular_1_m_axi');
+&Connect(
+    .biu_pad_retire_pc (regular_1_retire_pc),
+    .i_pad_clk (regular_1_clk),
+    .i_pad_rst_b (regular_1_rstn),
+    .pad_cpu_rst_addr (regular_1_rst_addr),
+    .xocc_0_clk (dispatcher_clk),
+    .xocc_0_rst (dispatcher_rstn),
+);
+&Force("output", "regular_1_retire_pc");
+
+
+// Init XoCC Connect from dispatcher to regular_0
+&Instance("xocc_connect", "x_xocc_connect_0");
+&ConnRule(r'xocc_s', r'regular_0_xocc_0');
+&ConnRule(r's_xocc', r'regular_0_xocc_0');
+&ConnRule(r'm_xocc', r'dispatcher_xocc_0');
+&ConnRule(r'xocc_m', r'dispatcher_xocc_0');
+&Connect(
+    .clk (regular_0_clk),
+    .rstn (regular_0_rstn),
+);
+&Force("input", "regular_0_clk");
+&Force("input", "regular_0_rstn");
+
+// Init XoCC Connect from dispatcher to regular_1
+&Instance("xocc_connect", "x_xocc_connect_1");
+&ConnRule(r'xocc_s', r'regular_1_xocc_1');
+&ConnRule(r's_xocc', r'regular_1_xocc_1');
+&ConnRule(r'm_xocc', r'dispatcher_xocc_1');
+&ConnRule(r'xocc_m', r'dispatcher_xocc_1');
+&Connect(
+    .clk (regular_1_clk),
+    .rstn (regular_1_rstn),
+);
+&Force("input", "regular_1_clk");
+&Force("input", "regular_1_rstn");
+
+&ModuleEnd;

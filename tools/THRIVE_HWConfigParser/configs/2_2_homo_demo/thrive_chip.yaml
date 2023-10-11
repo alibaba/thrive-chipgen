@@ -1,0 +1,116 @@
+# 
+#Copyright (c) 2021, Alibaba Group;
+#Licensed under the Apache License, Version 2.0 (the "License");
+#you may not use this file except in compliance with the License.
+#You may obtain a copy of the License at
+
+#   http://www.apache.org/licenses/LICENSE-2.0
+
+#Unless required by applicable law or agreed to in writing, software
+#distributed under the License is distributed on an "AS IS" BASIS,
+#WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#See the License for the specific language governing permissions and
+#limitations under the License.
+#
+
+version: 1.0
+type: homogeneous
+topology: [2,2]
+link:
+- bandwidth: 128
+  currentBandwidth: 0.0
+  direction: bi
+  dst: 1
+  index: 4
+  isBusy: false
+  latency: 1
+  src: 0
+- bandwidth: 128
+  currentBandwidth: 0.0
+  direction: bi
+  dst: 2
+  index: 5
+  isBusy: false
+  latency: 1
+  src: 0
+- bandwidth: 128
+  currentBandwidth: 0.0
+  direction: bi
+  dst: 3
+  index: 6
+  isBusy: false
+  latency: 1
+  src: 1
+- bandwidth: 128
+  currentBandwidth: 0.0
+  direction: bi
+  dst: 3
+  index: 7
+  isBusy: false
+  latency: 1
+  src: 2
+memory:
+- currentData: []
+  index: -1
+  memSize: 0
+pe:
+- computeCapacityTensor: 1024
+  computeCapacityVector: 32
+  currentMem: 0
+  currentOpIndex: -1
+  index: 0
+  isBusy: false
+  memSize: 524288
+  name: thrive_pe_0_0
+  type: thrive_pe
+  x: 0
+  y: 0
+- computeCapacityTensor: 1024
+  computeCapacityVector: 32
+  currentMem: 0
+  currentOpIndex: -1
+  index: 1
+  isBusy: false
+  memSize: 524288
+  name: thrive_pe_1_0
+  type: thrive_pe
+  x: 1
+  y: 0
+- computeCapacityTensor: 1024
+  computeCapacityVector: 32
+  currentMem: 0
+  currentOpIndex: -1
+  index: 2
+  isBusy: false
+  memSize: 524288
+  name: thrive_pe_0_1
+  type: thrive_pe
+  x: 0
+  y: 1
+- computeCapacityTensor: 1024
+  computeCapacityVector: 32
+  currentMem: 0
+  currentOpIndex: -1
+  index: 3
+  isBusy: false
+  memSize: 524288
+  name: thrive_pe_1_1
+  type: thrive_pe
+  x: 1
+  y: 1
+memory_map:
+  - name: sys_reg
+    start_addr: 32'hC000_0000
+    end_addr: 32'hC010_0000
+  - name: pe_0_0
+    start_addr: 32'h0000_0000
+    end_addr: 32'h1000_0000
+  - name: pe_1_0
+    start_addr: 32'h1000_0000
+    end_addr: 32'h2000_0000
+  - name: pe_0_1
+    start_addr: 32'h2000_0000
+    end_addr: 32'h3000_0000
+  - name: pe_1_1
+    start_addr: 32'h3000_0000
+    end_addr: 32'h4000_0000

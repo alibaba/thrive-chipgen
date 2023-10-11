@@ -1,0 +1,43 @@
+MEMORY
+{
+MEM1(RWX)  : ORIGIN = 0x2100000,  LENGTH = 0x20000
+MEM2(RWX)  : ORIGIN = 0x2120000,  LENGTH = 0x20000
+}
+__kernel_stack = 0x213c000;
+
+ENTRY(__start)
+
+SECTIONS {
+    .text :
+    {
+        crt0.o (.text)
+        *(.text*)
+        . = ALIGN(0x10);
+    } >MEM1
+    .rodata :
+    {
+      *(.rodata*)
+          . = ALIGN(0x4);
+        __erodata = .;
+    } > MEM1
+    .data :
+    {
+      . = ALIGN(0x4);
+      __data_start__ = .;
+        *(.data*)
+        *(.eh_frame*)
+          . = ALIGN(0x4);
+        __data_end__ = .;
+    } >MEM2 AT > MEM1
+    .bss :
+    {
+      . = ALIGN(0x4);
+      __bss_start__ = .;
+        *(.bss)
+         . = ALIGN(0x4);
+        __bss_end__ = .;
+          *.(COMMON)
+    } >MEM2
+}
+
+

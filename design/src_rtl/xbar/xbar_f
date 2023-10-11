@@ -1,0 +1,10 @@
+cp $AXI_COMMON_CELL_PATH/src/addr_decode.sv	 ./src
+cp $AXI_COMMON_CELL_PATH/src/counter.sv	 ./src
+cp $AXI_COMMON_CELL_PATH/src/delta_counter.sv	 ./src
+cp $AXI_COMMON_CELL_PATH/src/fifo_v3.sv	 ./src
+cp $AXI_COMMON_CELL_PATH/src/lzc.sv	 ./src
+cp $AXI_COMMON_CELL_PATH/src/rr_arb_tree.sv	 ./src
+cp $AXI_COMMON_CELL_PATH/src/onehot_to_bin.sv	 ./src
+cp $AXI_COMMON_CELL_PATH/src/spill_register_flushable.sv	 ./src
+cp $AXI_COMMON_CELL_PATH/src/spill_register.sv	 ./src
+cp $AXI_COMMON_CELL_PATH/src/stream_register.sv	 ./src

@@ -1,0 +1,119 @@
+/* 
+*Copyright (c) 2021, Alibaba Group;
+*Licensed under the Apache License, Version 2.0 (the "License");
+*you may not use this file except in compliance with the License.
+*You may obtain a copy of the License at
+
+*   http://www.apache.org/licenses/LICENSE-2.0
+
+*Unless required by applicable law or agreed to in writing, software
+*distributed under the License is distributed on an "AS IS" BASIS,
+*WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*See the License for the specific language governing permissions and
+*limitations under the License.
+*/
+
+&ModuleBeg;
+&Ports;
+
+// Inst RV Cluster
+&Instance("rv_cluster_top");
+&ConnRule(r'_retire_pc', r'_pc')
+&Connect(
+    .dispatcher_xocc_2_clk (nou_clk),
+    .dispatcher_xocc_2_rst (nou_rstn),
+    .dispatcher_xocc_3_clk (dsa_2_clk),
+    .dispatcher_xocc_3_rst (dsa_2_rstn),
+    .regular_0_xocc_4_clk (dsa_0_clk),
+    .regular_0_xocc_4_rst (dsa_0_rstn),
+    .regular_1_xocc_5_clk (dsa_1_clk),
+    .regular_1_xocc_5_rst (dsa_1_rstn),
+);
+
+// Inst dsa_0 
+&Instance("dummy_dsa_top_wrapper", "x_dsa_0_top_wrapper");
+&ConnRule(r'rv_xocc', r'regular_0_xocc_4');
+&ConnRule(r'axi', r'dsa_0_m_axi');
+&ConnRule(r'axi_aclk', r'dsa_0_clk');
+&ConnRule(r'axi_aresetn', r'dsa_0_rstn');
+
+// Inst dsa_1 
+&Instance("dummy_dsa_top_wrapper", "x_dsa_1_top_wrapper");
+&ConnRule(r'rv_xocc', r'regular_1_xocc_5');
+&ConnRule(r'axi', r'dsa_1_m_axi');
+&ConnRule(r'axi_aclk', r'dsa_1_clk');
+&ConnRule(r'axi_aresetn', r'dsa_1_rstn');
+
+// Inst dsa_2 
+&Instance("dummy_dsa_top_wrapper", "x_dsa_2_top_wrapper");
+&ConnRule(r'rv_xocc', r'dispatcher_xocc_3');
+&ConnRule(r'axi', r'dsa_2_m_axi');
+&ConnRule(r'axi_aclk', r'dsa_2_clk');
+&ConnRule(r'axi_aresetn', r'dsa_2_rstn');
+
+// Inst nou 
+&Instance("nou_top_wrapper", "x_nou_top_wrapper");
+&ConnRule(r'rv_xocc', r'dispatcher_xocc_2');
+&ConnRule(r'axi', r'nou_m_axi');
+&ConnRule(r'axi_aclk', r'nou_clk');
+&ConnRule(r'axi_aresetn', r'nou_rstn');
+
+
+// Mem SS
+&Instance("mem_sub_sys_top");
+
+// NoC
+&Instance("noc_wrapper");
+
+// CSR
+&Instance("axi_csr", "x_csr");
+&ConnRule(r'axi_', r'csr_axi_');
+&Connect(
+    .aclk (sys_clk),
+    .arstn (sys_rstn),
+);
+
+// XBar
+&Instance("xbar_top");
+
+&ConnRule(r'S00_AXI', r'dispatcher_m_axi');
+&ConnRule(r'S01_AXI', r'regular_0_m_axi');
+&ConnRule(r'S02_AXI', r'regular_1_m_axi');
+&ConnRule(r'S03_AXI', r'dsa_0_m_axi');
+&ConnRule(r'S04_AXI', r'dsa_1_m_axi');
+&ConnRule(r'S05_AXI', r'dsa_2_m_axi');
+&ConnRule(r'S06_AXI', r'nou_m_axi');
+&ConnRule(r'M00_AXI', r's_0_axi');
+&ConnRule(r'M01_AXI', r's_1_axi');
+&ConnRule(r'M02_AXI', r's_2_axi');
+&ConnRule(r'M03_AXI', r's_3_axi');
+&ConnRule(r'M04_AXI', r'csr_axi');
+
+&Connect(
+    .S00_AXI_aclk (dispatcher_clk),
+    .S00_AXI_aresetn (dispatcher_rstn),
+    .S01_AXI_aclk (regular_0_clk),
+    .S01_AXI_aresetn (regular_0_rstn),
+    .S02_AXI_aclk (regular_1_clk),
+    .S02_AXI_aresetn (regular_1_rstn),
+    .S03_AXI_aclk (dsa_0_clk),
+    .S03_AXI_aresetn (dsa_0_rstn),
+    .S04_AXI_aclk (dsa_1_clk),
+    .S04_AXI_aresetn (dsa_1_rstn),
+    .S05_AXI_aclk (dsa_2_clk),
+    .S05_AXI_aresetn (dsa_2_rstn),
+    .S06_AXI_aclk (nou_clk),
+    .S06_AXI_aresetn (nou_rstn),
+    .M00_AXI_aclk (mem_sub_sys_clk),
+    .M00_AXI_aresetn (mem_sub_sys_rstn),
+    .M01_AXI_aclk (mem_sub_sys_clk),
+    .M01_AXI_aresetn (mem_sub_sys_rstn),
+    .M02_AXI_aclk (mem_sub_sys_clk),
+    .M02_AXI_aresetn (mem_sub_sys_rstn),
+    .M03_AXI_aclk (mem_sub_sys_clk),
+    .M03_AXI_aresetn (mem_sub_sys_rstn),
+    .M04_AXI_aclk (sys_clk),
+    .M04_AXI_aresetn (sys_rstn),
+);
+
+&ModuleEnd;

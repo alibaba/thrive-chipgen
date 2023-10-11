@@ -1,0 +1,64 @@
+/* 
+*Copyright (c) 2021, Alibaba Group;
+*Licensed under the Apache License, Version 2.0 (the "License");
+*you may not use this file except in compliance with the License.
+*You may obtain a copy of the License at
+
+*   http://www.apache.org/licenses/LICENSE-2.0
+
+*Unless required by applicable law or agreed to in writing, software
+*distributed under the License is distributed on an "AS IS" BASIS,
+*WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*See the License for the specific language governing permissions and
+*limitations under the License.
+*/
+
+&ModuleBeg;
+&Ports;
+
+% for rv in rvc.dispatcher + rvc.regular:
+// Init RV: ${rv.name}
+&Instance("${rv.name}_rv_wrapper");
+    % for link in rv.link:
+        % if link.type == "xocc":
+<% ind = rv.xocc_link_hash[link.index] %>\
+&ConnRule(r'^xocc_${ind}', r'${rv.name}_xocc_${link.index}');
+        % endif
+    % endfor
+&ConnRule(r'm_axi', r'${rv.name}_m_axi');
+&Connect(
+    .biu_pad_retire_pc (${rv.name}_retire_pc),
+    .i_pad_clk (${rv.name}_clk),
+    .i_pad_rst_b (${rv.name}_rstn),
+    .pad_cpu_rst_addr (${rv.name}_rst_addr),
+    % for ind, link in enumerate(rv.link):
+        % if link.dst in rvc.config:
+    .xocc_${ind}_clk (${link.dst}_clk),
+    .xocc_${ind}_rst (${link.dst}_rstn),
+        % endif
+    % endfor
+);
+&Force("output", "${rv.name}_retire_pc");
+
+% endfor
+
+% for rv in rvc.dispatcher:
+    % for link in rv.link:
+        % if link.dst in rvc.config:
+// Init XoCC Connect from ${rv.name} to ${link.dst}
+&Instance("xocc_connect", "x_xocc_connect_${link.index}");
+&ConnRule(r'xocc_s', r'${link.dst}_xocc_${link.index}');
+&ConnRule(r's_xocc', r'${link.dst}_xocc_${link.index}');
+&ConnRule(r'm_xocc', r'${rv.name}_xocc_${link.index}');
+&ConnRule(r'xocc_m', r'${rv.name}_xocc_${link.index}');
+&Connect(
+    .clk (${link.dst}_clk),
+    .rstn (${link.dst}_rstn),
+);
+&Force("input", "${link.dst}_clk");
+&Force("input", "${link.dst}_rstn");
+
+        % endif
+    % endfor
+% endfor
+&ModuleEnd;

@@ -1,0 +1,80 @@
+/* 
+*Copyright (c) 2021, Alibaba Group;
+*Licensed under the Apache License, Version 2.0 (the "License");
+*you may not use this file except in compliance with the License.
+*You may obtain a copy of the License at
+
+*   http://www.apache.org/licenses/LICENSE-2.0
+
+*Unless required by applicable law or agreed to in writing, software
+*distributed under the License is distributed on an "AS IS" BASIS,
+*WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*See the License for the specific language governing permissions and
+*limitations under the License.
+*/
+
+&ModuleBeg;
+&Ports;
+
+&Instance("pe_array_top");
+&ConnRule(r'retire_pc', r'pc');
+&ConnRule(r'S_HOST', r'M');
+&Connect(
+    .pe_0_0_S_HOST_AXI_aclk(sys_clk),
+    .pe_0_0_S_HOST_AXI_aresetn(sys_rstn),
+    .pe_1_0_S_HOST_AXI_aclk(sys_clk),
+    .pe_1_0_S_HOST_AXI_aresetn(sys_rstn),
+    .pe_0_1_S_HOST_AXI_aclk(sys_clk),
+    .pe_0_1_S_HOST_AXI_aresetn(sys_rstn),
+    .pe_1_1_S_HOST_AXI_aclk(sys_clk),
+    .pe_1_1_S_HOST_AXI_aresetn(sys_rstn),
+);
+
+&Instance("pe_clkgen", "x_pe_0_0_clkgen");
+&ConnRule(r'^', r'pe_0_0_');
+
+&Instance("pe_rstgen", "x_pe_0_0_rstgen");
+&ConnRule(r'^', r'pe_0_0_');
+
+&Instance("pe_clkgen", "x_pe_1_0_clkgen");
+&ConnRule(r'^', r'pe_1_0_');
+
+&Instance("pe_rstgen", "x_pe_1_0_rstgen");
+&ConnRule(r'^', r'pe_1_0_');
+
+&Instance("pe_clkgen", "x_pe_0_1_clkgen");
+&ConnRule(r'^', r'pe_0_1_');
+
+&Instance("pe_rstgen", "x_pe_0_1_rstgen");
+&ConnRule(r'^', r'pe_0_1_');
+
+&Instance("pe_clkgen", "x_pe_1_1_clkgen");
+&ConnRule(r'^', r'pe_1_1_');
+
+&Instance("pe_rstgen", "x_pe_1_1_rstgen");
+&ConnRule(r'^', r'pe_1_1_');
+
+
+&Instance("sys_reg", "x_sys_reg");
+&ConnRule(r'axi_', r'sys_reg_AXI_');
+
+//&Instance("spi2axi_wrapper", "x_spi2axi_wrapper");
+//&ConnRule(r'axi_', r'HOST_S_AXI_');
+
+&Instance("shell_xbar_top");
+&Connect(
+    .HOST_S_AXI_aclk(sys_clk),
+    .HOST_S_AXI_aresetn(sys_rstn),
+    .pe_0_0_M_AXI_aclk(sys_clk),
+    .pe_0_0_M_AXI_aresetn(sys_rstn),
+    .pe_1_0_M_AXI_aclk(sys_clk),
+    .pe_1_0_M_AXI_aresetn(sys_rstn),
+    .pe_0_1_M_AXI_aclk(sys_clk),
+    .pe_0_1_M_AXI_aresetn(sys_rstn),
+    .pe_1_1_M_AXI_aclk(sys_clk),
+    .pe_1_1_M_AXI_aresetn(sys_rstn),
+	.sys_reg_AXI_aclk    (sys_clk    ),
+	.sys_reg_AXI_aresetn (sys_rstn ),
+);
+
+&ModuleEnd;
